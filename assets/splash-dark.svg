@@ -5,29 +5,53 @@
       <stop offset="60%" stop-color="#134a4e"/>
       <stop offset="100%" stop-color="#0c3134"/>
     </radialGradient>
-    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fffaf0"/>
-      <stop offset="100%" stop-color="#f3e9d4"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#f8c659"/>
-      <stop offset="100%" stop-color="#d99a2a"/>
+    <linearGradient id="hcSpine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3aa0a5"/><stop offset="1" stop-color="#1c6a70"/>
     </linearGradient>
   </defs>
   <rect width="2732" height="2732" fill="url(#bg)"/>
 
-  <g transform="translate(1366 1180)">
-    <g transform="rotate(6) scale(1.15)">
-      <rect x="-156" y="-220" width="312" height="440" rx="40" fill="url(#card)" stroke="url(#gold)" stroke-width="11"/>
-      <rect x="-156" y="-220" width="312" height="52" rx="40" fill="url(#gold)"/>
-      <rect x="-156" y="-192" width="312" height="24" fill="url(#gold)"/>
-      <rect x="-156" y="-168" width="312" height="16" fill="#3fc6c9"/>
-      <polygon points="0,-60 -120,-80 -120,100 0,122" fill="url(#gold)"/>
-      <polygon points="0,-60 120,-80 120,100 0,122" fill="#e0b341"/>
-      <rect x="-6" y="-62" width="12" height="186" rx="4" fill="#2b8a8f"/>
+  <!-- مروحة الكروت (نفس لوجو شاشة البداية) -->
+  <g transform="translate(526 210) scale(6)">
+    <g transform="translate(140 176) rotate(-22)">
+      <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+      <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+      <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+      <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+      <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
     </g>
+    <g transform="translate(140 176) rotate(22)">
+      <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+      <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+      <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+      <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+      <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+    </g>
+    <g transform="translate(140 176) rotate(-11)">
+      <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+      <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+      <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+      <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+      <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+    </g>
+    <g transform="translate(140 176) rotate(11)">
+      <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+      <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+      <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+      <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+      <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+    </g>
+    <g transform="translate(140 176) rotate(0)">
+      <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+      <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+      <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+      <circle cx="-9" cy="-42" r="12" fill="none" stroke="#f5b83e" stroke-width="4.5"/>
+      <circle cx="9" cy="-42" r="12" fill="none" stroke="#f8d27a" stroke-width="4.5"/>
+    </g>
+    <rect x="44" y="176" width="192" height="15" rx="5" fill="#f5b83e"/>
+    <rect x="44" y="189" width="192" height="6" rx="3" fill="#d99a2a"/>
   </g>
 
-  <text x="1366" y="1740" font-family="Arial, sans-serif" font-size="190" font-weight="900" fill="#f5b83e" text-anchor="middle">Hub Cards</text>
-  <text x="1366" y="1850" font-family="Arial, sans-serif" font-size="86" font-weight="700" fill="#aed8d9" text-anchor="middle">من عائلة BookHub</text>
+  <text x="1366" y="1760" font-family="Arial, sans-serif" font-size="210" font-weight="900" fill="#f5b83e" text-anchor="middle">Hub Cards</text>
+  <text x="1366" y="1880" font-family="Arial, sans-serif" font-size="86" font-weight="700" fill="#aed8d9" text-anchor="middle">من عائلة BookHub</text>
 </svg>

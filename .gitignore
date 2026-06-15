@@ -13,3 +13,6 @@ android/local.properties
 .DS_Store
 Thumbs.db
 *.log
+
+# ملفات مؤقتة (APK المحمّل + معاينات)
+dist/

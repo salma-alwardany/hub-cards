@@ -56,10 +56,13 @@ h1{font-weight:900;}
 .btn-red{background:linear-gradient(135deg,#fb7185,#ef4444);color:#fff;box-shadow:0 8px 22px rgba(248,113,113,.3);}
 .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.16);}
 .btn:disabled{opacity:.4;}
+.mute-btn{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.mute-btn:active{transform:scale(.9);}
 
 /* ===== START ===== */
 #start{justify-content:center;align-items:center;text-align:center;gap:8px;}
-.logo{font-size:78px;animation:pulse 3s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.4));}
+.logo{animation:pulse 3s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));}
+.logo svg{width:230px;max-width:66vw;height:auto;display:block;margin:0 auto;}
 #start h1{font-size:42px;color:var(--gold);letter-spacing:-1px;}
 .tag{color:#aed8d9;font-size:16px;font-weight:500;margin-bottom:8px;}
 .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0 26px;}
@@ -184,7 +187,7 @@ h1{font-weight:900;}
 .footer-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
 .toast{
   position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
-  background:#2a1a3e;border:1.5px solid var(--gold);color:#fff;padding:13px 22px;border-radius:30px;
+  background:#134a4e;border:1.5px solid var(--gold);color:#fff;padding:13px 22px;border-radius:30px;
   font-weight:700;font-size:15px;z-index:50;box-shadow:var(--shadow);animation:pop .3s;max-width:90%;text-align:center;
 }
 .hint{font-size:13px;color:#5f9093;text-align:center;margin-top:10px;line-height:1.6;}
@@ -193,9 +196,56 @@ h1{font-weight:900;}
 <body>
 <div id="app">
 
+  <button id="muteBtn" class="mute-btn" onclick="toggleMute()" aria-label="كتم الصوت">🔊</button>
+
   <!-- START -->
   <div class="screen active" id="start">
-    <div class="logo">🃏</div>
+    <div class="logo">
+      <svg viewBox="0 56 280 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hub Cards">
+        <defs>
+          <linearGradient id="hcSpine" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3aa0a5"/><stop offset="1" stop-color="#1c6a70"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(140 176) rotate(-22)">
+          <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+          <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+          <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+          <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+          <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+        </g>
+        <g transform="translate(140 176) rotate(22)">
+          <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+          <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+          <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+          <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+          <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+        </g>
+        <g transform="translate(140 176) rotate(-11)">
+          <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+          <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+          <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+          <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+          <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+        </g>
+        <g transform="translate(140 176) rotate(11)">
+          <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+          <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+          <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+          <rect x="-20" y="-44" width="40" height="5" rx="2.5" fill="#f5b83e" opacity="0.7"/>
+          <rect x="-20" y="-33" width="28" height="5" rx="2.5" fill="#f5b83e" opacity="0.5"/>
+        </g>
+        <g transform="translate(140 176) rotate(0)">
+          <rect x="-31" y="-112" width="62" height="118" rx="11" fill="url(#hcSpine)" stroke="#0f4448" stroke-width="2.5"/>
+          <rect x="-31" y="-88" width="62" height="15" fill="#f5b83e"/>
+          <rect x="-31" y="-73" width="62" height="7" fill="#3fc6c9"/>
+          <circle cx="-9" cy="-42" r="12" fill="none" stroke="#f5b83e" stroke-width="4.5"/>
+          <circle cx="9" cy="-42" r="12" fill="none" stroke="#f8d27a" stroke-width="4.5"/>
+        </g>
+        <rect x="44" y="176" width="192" height="15" rx="5" fill="#f5b83e"/>
+        <rect x="44" y="189" width="192" height="6" rx="3" fill="#d99a2a"/>
+      </svg>
+    </div>
     <h1>Hub Cards</h1>
     <div class="tag">من عائلة <b style="color:var(--gold)">BookHub</b> · لعبة كروت للقُرّاء</div>
     <div class="chips">
@@ -361,15 +411,63 @@ let G = null;
 const $ = id => document.getElementById(id);
 function show(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(s).classList.add('active');}
 
-/* ====================== صوت بسيط ====================== */
-let AC=null;
-function beep(freq=600,dur=0.12,type='sine',vol=0.15){
-  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
-    const o=AC.createOscillator(),g=AC.createGain();
-    o.type=type;o.frequency.value=freq;o.connect(g);g.connect(AC.destination);
-    g.gain.setValueAtTime(vol,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);
-    o.start();o.stop(AC.currentTime+dur);}catch(e){}
+/* ====================== مؤثرات صوتية (Web Audio) ====================== */
+const SFX = {
+  ac:null, master:null, muted:false, ready:false,
+  init(){
+    if(this.ready) return;
+    try{
+      this.ac = new (window.AudioContext||window.webkitAudioContext)();
+      this.master = this.ac.createGain();
+      this.master.gain.value = 0.85;
+      this.master.connect(this.ac.destination);
+      this.ready = true;
+    }catch(e){}
+    this.muted = localStorage.getItem('hc_muted')==='1';
+  },
+  resume(){ try{ if(this.ac && this.ac.state==='suspended') this.ac.resume(); }catch(e){} },
+  // freq, بداية(ث), مدة(ث), شكل الموجة, مستوى, تردد-نهائي(انزلاق)
+  tone(freq, t0, dur, type='sine', vol=0.18, to=null){
+    if(!this.ready || this.muted) return;
+    try{
+      const o=this.ac.createOscillator(), g=this.ac.createGain();
+      const s=this.ac.currentTime+t0;
+      o.type=type; o.frequency.setValueAtTime(freq,s);
+      if(to) o.frequency.exponentialRampToValueAtTime(Math.max(1,to), s+dur);
+      g.gain.setValueAtTime(0.0001,s);
+      g.gain.exponentialRampToValueAtTime(vol, s+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, s+dur);
+      o.connect(g); g.connect(this.master);
+      o.start(s); o.stop(s+dur+0.03);
+    }catch(e){}
+  },
+  seq(notes){ notes.forEach(n=>this.tone(n[0],n[1],n[2],n[3]||'sine',n[4]||0.18,n[5]||null)); },
+  tap(){ this.init(); this.resume(); this.tone(430,0,0.05,'triangle',0.10,300); },
+  draw(){ this.init(); this.resume(); this.tone(280,0,0.18,'sine',0.16,720); this.tone(720,0.05,0.10,'triangle',0.07); },
+  tick(){ this.tone(1000,0,0.05,'square',0.08); },
+  correct(){ this.seq([[660,0,0.12,'triangle',0.18],[880,0.09,0.13,'triangle',0.18],[1175,0.19,0.20,'sine',0.16]]); },
+  streak(){ this.seq([[784,0,0.10,'triangle',0.16],[1047,0.09,0.10,'triangle',0.16],[1319,0.18,0.22,'sine',0.16]]); },
+  wrong(){ this.tone(320,0,0.18,'sawtooth',0.18,150); this.tone(150,0.13,0.22,'square',0.12); },
+  timeup(){ this.tone(240,0,0.5,'sawtooth',0.20,90); this.tone(120,0,0.5,'square',0.12); },
+  special(){ this.seq([[523,0,0.16,'triangle',0.16],[659,0.09,0.16,'triangle',0.16],[784,0.18,0.16,'triangle',0.16],[1047,0.27,0.26,'sine',0.18]]); },
+  shield(){ this.tone(520,0,0.18,'sine',0.18,1000); this.tone(1000,0.12,0.20,'sine',0.10); },
+  reverse(){ this.tone(760,0,0.16,'triangle',0.16,360); this.tone(360,0.10,0.18,'triangle',0.15,760); },
+  dn(){ this.tone(330,0,0.18,'sawtooth',0.16,660); this.tone(660,0.12,0.18,'square',0.12); },
+  win(){ this.seq([[523,0,0.18,'triangle',0.20],[659,0.14,0.18,'triangle',0.20],[784,0.28,0.18,'triangle',0.20],[1047,0.42,0.30,'triangle',0.22],[1047,0.80,0.50,'sine',0.20],[1319,0.80,0.50,'sine',0.16]]); }
+};
+function toggleMute(){
+  SFX.init();
+  SFX.muted=!SFX.muted;
+  localStorage.setItem('hc_muted', SFX.muted?'1':'0');
+  updateMuteBtn();
+  if(!SFX.muted){ SFX.resume(); SFX.tap(); }
 }
+function updateMuteBtn(){ const b=$('muteBtn'); if(b) b.textContent = SFX.muted?'🔇':'🔊'; }
+// تهيئة الصوت على أول لمسة + نقرة خفيفة على الأزرار
+document.addEventListener('pointerdown', e=>{
+  SFX.init(); SFX.resume();
+  if(e.target.closest('.btn,.cbtn,.hand-card,.deck') && !e.target.closest('#muteBtn')) SFX.tap();
+}, {passive:true});
 
 /* ====================== SETUP ====================== */
 let setupCount=3;
@@ -405,6 +503,7 @@ function nextTurnIntro(){
   $('passAv').textContent=p.av;
   $('passName').textContent=p.name;
   $('passRound').textContent=`الجولة ${G.round} من 10`+(isLastRound()?" — ⚡ Double or Nothing!":"");
+  if(isLastRound()) SFX.dn();
   show('pass');
 }
 
@@ -465,7 +564,7 @@ function pickRuling(q){
 }
 
 function drawCard(){
-  beep(520,0.1);
+  SFX.draw();
   const q=rand(QUESTIONS);
   G.card=q;G.ruling=pickRuling(q);
   const diffTxt=['','سهل','متوسط','صعب'][q.d];
@@ -507,13 +606,13 @@ function startTimer(){
     const frac=t/10;
     ring.style.strokeDashoffset=(C*(1-frac)).toFixed(1);
     tnum.textContent=Math.ceil(t);
-    if(t<=3){box.classList.add('warn');ring.style.stroke='var(--red)';if(Math.abs(t-Math.round(t))<0.05)beep(880,0.07,'square',0.12);}
+    if(t<=3){box.classList.add('warn');ring.style.stroke='var(--red)';if(Math.abs(t-Math.round(t))<0.05)SFX.tick();}
   },100);
 }
 function clearTimer(){if(timerInt){clearInterval(timerInt);timerInt=null;}}
 
 function timeUp(){
-  beep(180,0.4,'sawtooth',0.18);
+  SFX.timeup();
   const c=$('qcard');if(c)c.classList.add('fail');
   judge(false,true);
 }
@@ -527,12 +626,13 @@ function judge(correct,timeout=false){
 }
 
 function correctAnswer(p){
-  beep(660,0.12);setTimeout(()=>beep(880,0.14),90);
+  SFX.correct();
   let pts=isLastRound()?2:1;
   let doubled=false;
   if(p.doubleArmed){pts*=2;doubled=true;p.doubleArmed=false;p.hand.splice(p.hand.indexOf('double'),1);}
   p.score+=pts;p.streak++;
   const gotStreak = p.streak>0 && p.streak%3===0;
+  if(gotStreak) setTimeout(()=>SFX.streak(),260);
   $('gameBody').className='draw-wrap';
   $('gameBody').innerHTML=`
     <div class="banner ok">
@@ -548,7 +648,7 @@ function correctAnswer(p){
 }
 
 function failAnswer(p,timeout){
-  beep(200,0.3,'sawtooth',0.15);
+  SFX.wrong();
   p.streak=0;
   let deduction = isLastRound()?2:0;
   const hasImm=p.hand.includes('immunity');
@@ -577,7 +677,7 @@ function failAnswer(p,timeout){
 function useImmunity(){
   const p=cur();p.hand.splice(p.hand.indexOf('immunity'),1);
   if(G._deducted){p.score+=G._deducted;G._deducted=0;} // رجّع النقط المخصومة
-  beep(700,0.15);toast("🛡️ الحصانة أنقذتك — اتلغى الحكم!");
+  SFX.shield();toast("🛡️ الحصانة أنقذتك — اتلغى الحكم!");
   renderMini();
   $('gameBody').innerHTML=`<div class="banner ok"><div class="big">🛡️</div><h2>اتلغى الحكم!</h2><div style="color:#aed8d9;margin-top:8px">الحصانة حمتك المرة دي.</div></div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">التالي ›</button>`;
 }
@@ -594,7 +694,7 @@ function doReverse(targetIdx){
   const p=cur();p.hand.splice(p.hand.indexOf('reverse'),1);
   if(G._deducted){p.score+=G._deducted;G._deducted=0;}
   const tgt=G.players[targetIdx];
-  beep(620,0.15);renderMini();
+  SFX.reverse();renderMini();
   $('gameBody').innerHTML=`<div class="banner ok"><div class="big">😈</div><h2>اتقلب الحكم!</h2>
     <div class="ruling-do"><div class="h">⚖️ ${tgt.av} ${tgt.name} لازم يعمل:</div><div class="t">${G.ruling.t}</div></div>
     </div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">اتعمل الحكم — التالي ›</button>`;
@@ -606,7 +706,7 @@ function goSpecial(){
   const keys=Object.keys(SPECIALS);
   const k=rand(keys);p.hand.push(k);G._lastSpecial=k;
   const s=SPECIALS[k];
-  beep(523,0.12);setTimeout(()=>beep(659,0.12),110);setTimeout(()=>beep(784,0.16),220);
+  SFX.special();
   $('specCardBox').innerHTML=`<div class="spec-card ${s.specCls}"><div class="ic">${s.ic}</div><h2>${s.name}</h2><p>${s.desc}</p></div>`;
   show('specialDraw');
 }
@@ -641,6 +741,7 @@ function gameOver(){
        <div class="rn">${p.name}</div>
        <div class="rs">${p.score}</div>
      </div>`).join('');
+  SFX.win();
   show('over');
 }
 
@@ -662,6 +763,10 @@ function toast(msg){
 const styleEl=document.createElement('style');
 styleEl.textContent='.qcard::before{background:var(--s,var(--gold))!important;}';
 document.head.appendChild(styleEl);
+
+/* حالة زرار الكتم عند التحميل */
+SFX.muted = localStorage.getItem('hc_muted')==='1';
+updateMuteBtn();
 </script>
 </body>
 </html>
