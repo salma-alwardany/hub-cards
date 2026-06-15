@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1228">
+<title>Hub Cards · BookHub 📚</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#1a1228; --bg2:#2a1a3e; --bg3:#3d2459;
+  --gold:#f5c451; --gold-d:#d9a738;
+  --pink:#ff6b9d; --green:#4ade80; --red:#f87171;
+  --blue:#60a5fa; --purple:#a78bfa;
+  --card:#fbf6ea; --ink:#2a1a3e; --muted:#7c6f8a;
+  --shadow:0 18px 40px rgba(0,0,0,.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Tajawal',sans-serif;}
+html,body{height:100%;}
+body{
+  background:radial-gradient(circle at 50% 0%,var(--bg3),var(--bg1) 60%);
+  color:#fff;overflow:hidden;position:fixed;inset:0;
+  display:flex;justify-content:center;
+  user-select:none;-webkit-user-select:none;
+}
+#app{
+  width:100%;max-width:480px;height:100%;
+  display:flex;flex-direction:column;position:relative;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+.screen{
+  flex:1;display:none;flex-direction:column;
+  padding:22px 20px;overflow-y:auto;animation:fade .35s ease;
+}
+.screen.active{display:flex;}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:rotateY(0);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+h1{font-weight:900;}
+.btn{
+  border:none;border-radius:18px;padding:17px 20px;font-size:19px;font-weight:800;
+  cursor:pointer;width:100%;transition:transform .12s,filter .12s;font-family:inherit;
+}
+.btn:active{transform:scale(.96);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#3a2208;box-shadow:0 8px 22px rgba(245,196,81,.35);}
+.btn-green{background:linear-gradient(135deg,#4ade80,#22c55e);color:#06310f;box-shadow:0 8px 22px rgba(74,222,128,.3);}
+.btn-red{background:linear-gradient(135deg,#fb7185,#ef4444);color:#fff;box-shadow:0 8px 22px rgba(248,113,113,.3);}
+.btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.16);}
+.btn:disabled{opacity:.4;}
+
+/* ===== START ===== */
+#start{justify-content:center;align-items:center;text-align:center;gap:8px;}
+.logo{font-size:78px;animation:pulse 3s ease-in-out infinite;filter:drop-shadow(0 8px 16px rgba(0,0,0,.4));}
+#start h1{font-size:42px;color:var(--gold);letter-spacing:-1px;}
+.tag{color:#cbb8e0;font-size:16px;font-weight:500;margin-bottom:8px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0 26px;}
+.chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:7px 14px;border-radius:30px;font-size:13px;color:#e6d9f5;}
+
+/* ===== SETUP ===== */
+.head{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.head h1{font-size:26px;color:var(--gold);}
+.section-t{font-size:15px;color:#cbb8e0;margin:18px 0 10px;font-weight:700;}
+.counter{display:flex;align-items:center;justify-content:center;gap:22px;margin:6px 0;}
+.counter .num{font-size:54px;font-weight:900;color:var(--gold);min-width:60px;}
+.cbtn{width:56px;height:56px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#fff;font-size:30px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.cbtn:active{transform:scale(.9);}
+.pinputs{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.pinput{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border-radius:14px;padding:4px 14px;}
+.pinput .av{font-size:24px;}
+.pinput input{flex:1;background:none;border:none;color:#fff;font-size:17px;font-weight:600;padding:14px 4px;font-family:inherit;outline:none;}
+.pinput input::placeholder{color:#8b7ca0;}
+
+/* ===== TURN / PASS ===== */
+#pass{justify-content:center;align-items:center;text-align:center;gap:14px;}
+.pass-av{font-size:80px;animation:pop .4s;}
+.pass-name{font-size:34px;font-weight:900;color:var(--gold);}
+.pass-sub{color:#cbb8e0;font-size:16px;}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;}
+.round-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:30px;padding:8px 16px;font-size:14px;font-weight:700;}
+.round-pill b{color:var(--gold);}
+.dn-pill{background:linear-gradient(135deg,#fb7185,#ef4444);color:#fff;border-radius:30px;padding:8px 16px;font-size:13px;font-weight:800;animation:pulse 1.5s infinite;}
+.turn-player{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;}
+
+/* mini scoreboard */
+.mini-scores{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;}
+.ms{flex-shrink:0;background:rgba(255,255,255,.06);border-radius:12px;padding:8px 12px;text-align:center;min-width:62px;border:1px solid transparent;}
+.ms.cur{border-color:var(--gold);background:rgba(245,196,81,.12);}
+.ms .nm{font-size:12px;color:#cbb8e0;white-space:nowrap;max-width:70px;overflow:hidden;text-overflow:ellipsis;}
+.ms .sc{font-size:22px;font-weight:900;color:var(--gold);}
+
+/* hand */
+.hand{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.hand-card{flex:1;min-width:0;border-radius:14px;padding:10px 6px;text-align:center;font-size:12px;font-weight:800;cursor:pointer;border:none;color:#fff;position:relative;font-family:inherit;}
+.hc-immunity{background:linear-gradient(135deg,#60a5fa,#3b82f6);}
+.hc-double{background:linear-gradient(135deg,#fb923c,#f97316);}
+.hc-reverse{background:linear-gradient(135deg,#a78bfa,#8b5cf6);}
+.hand-card .ic{font-size:26px;display:block;margin-bottom:3px;}
+.hand-card:active{transform:scale(.93);}
+.hand-card.on{outline:3px solid var(--gold);outline-offset:1px;}
+.hand-empty{color:#7c6f8a;font-size:13px;text-align:center;width:100%;padding:6px;}
+
+/* draw / card */
+.draw-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;}
+.deck{
+  width:190px;height:260px;border-radius:24px;cursor:pointer;
+  background:repeating-linear-gradient(45deg,#3d2459,#3d2459 12px,#34204d 12px,#34204d 24px);
+  border:3px solid var(--gold);box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;
+  position:relative;transition:transform .15s;
+}
+.deck:active{transform:scale(.95) rotate(-2deg);}
+.deck .bk{font-size:64px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));}
+.deck .lbl{color:var(--gold);font-weight:800;font-size:15px;}
+.deck::before{content:"";position:absolute;inset:8px;border:1.5px dashed rgba(245,196,81,.4);border-radius:18px;}
+
+/* question card */
+.qcard{
+  background:var(--card);color:var(--ink);border-radius:26px;padding:24px 22px;
+  box-shadow:var(--shadow);width:100%;animation:flip .5s;position:relative;overflow:hidden;
+}
+.qcard.fail{animation:shake .5s;}
+.qcard::before{content:"";position:absolute;top:0;right:0;left:0;height:7px;}
+.qcard .qtype{font-size:13px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.diff{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;color:#fff;}
+.d1{background:#22c55e;}.d2{background:#f59e0b;}.d3{background:#ef4444;}
+.qtext{font-size:27px;font-weight:900;line-height:1.4;margin:10px 0 4px;}
+.qruling{margin-top:16px;background:#fff3d6;border:1.5px dashed var(--gold-d);border-radius:16px;padding:13px 14px;}
+.qruling .rl{font-size:12px;font-weight:800;color:var(--gold-d);display:flex;align-items:center;gap:5px;}
+.qruling .rt{font-size:15px;font-weight:600;color:#5a4a20;margin-top:4px;line-height:1.5;}
+
+/* timer ring */
+.timer{position:relative;width:120px;height:120px;margin:4px auto;}
+.timer svg{transform:rotate(-90deg);}
+.timer .tnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#fff;}
+.timer.warn .tnum{color:var(--red);animation:pulse .5s infinite;}
+
+.judge-q{text-align:center;font-size:16px;color:#cbb8e0;font-weight:700;margin:6px 0;}
+.btn-row{display:flex;gap:10px;}
+
+/* result banners */
+.banner{text-align:center;padding:30px 20px;border-radius:26px;animation:pop .4s;width:100%;}
+.banner.ok{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,197,94,.1));border:2px solid var(--green);}
+.banner.no{background:linear-gradient(135deg,rgba(248,113,113,.18),rgba(239,68,68,.1));border:2px solid var(--red);}
+.banner .big{font-size:64px;}
+.banner h2{font-size:28px;font-weight:900;margin:6px 0;}
+.banner .pts{font-size:20px;font-weight:800;}
+.banner .pts.plus{color:var(--green);}
+.banner .pts.minus{color:var(--red);}
+.ruling-do{background:#fff3d6;color:#5a4a20;border-radius:16px;padding:16px;margin-top:16px;text-align:right;}
+.ruling-do .h{font-weight:900;color:var(--gold-d);margin-bottom:6px;font-size:15px;}
+.ruling-do .t{font-size:17px;font-weight:600;line-height:1.5;}
+
+/* special draw */
+#specialDraw{justify-content:center;align-items:center;text-align:center;gap:18px;}
+.streak-badge{font-size:18px;font-weight:800;color:var(--gold);}
+.spec-card{width:200px;border-radius:24px;padding:30px 20px;box-shadow:var(--shadow);animation:flip .6s;}
+.spec-card .ic{font-size:70px;}
+.spec-card h2{font-size:26px;font-weight:900;margin:10px 0 6px;}
+.spec-card p{font-size:15px;opacity:.95;line-height:1.5;}
+
+/* gameover */
+#over{justify-content:flex-start;}
+.trophy{font-size:80px;text-align:center;animation:pop .5s;}
+#over h1{text-align:center;font-size:30px;color:var(--gold);margin-bottom:4px;}
+.winner-name{text-align:center;font-size:24px;font-weight:900;margin-bottom:20px;}
+.rank{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border-radius:16px;padding:14px 16px;margin-bottom:10px;animation:fade .4s;}
+.rank.first{background:linear-gradient(135deg,rgba(245,196,81,.22),rgba(245,196,81,.08));border:1.5px solid var(--gold);}
+.rank .pos{font-size:24px;font-weight:900;width:36px;}
+.rank .rav{font-size:30px;}
+.rank .rn{flex:1;font-size:18px;font-weight:800;}
+.rank .rs{font-size:24px;font-weight:900;color:var(--gold);}
+
+.spacer{flex:1;}
+.footer-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.toast{
+  position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  background:#2a1a3e;border:1.5px solid var(--gold);color:#fff;padding:13px 22px;border-radius:30px;
+  font-weight:700;font-size:15px;z-index:50;box-shadow:var(--shadow);animation:pop .3s;max-width:90%;text-align:center;
+}
+.hint{font-size:13px;color:#8b7ca0;text-align:center;margin-top:10px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- START -->
+  <div class="screen active" id="start">
+    <div class="logo">🃏</div>
+    <h1>Hub Cards</h1>
+    <div class="tag">من عائلة <b style="color:var(--gold)">BookHub</b> · لعبة كروت للقُرّاء</div>
+    <div class="chips">
+      <span class="chip">٢ – ٥ لاعبين</span>
+      <span class="chip">١٠ جولات</span>
+      <span class="chip">⏱️ ١٠ ثواني للسؤال</span>
+      <span class="chip">🛡️ كروت خاصة</span>
+    </div>
+    <button class="btn btn-gold" onclick="goSetup()">يلا نلعب 🎲</button>
+    <div class="hint">إجابات السؤال لا نهائية — والباقي بيحكموا.<br>لو السكتّ ١٠ ثواني… يتطبّق عليك الحكم 😅</div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="screen" id="setup">
+    <div class="head">
+      <button class="cbtn" style="width:42px;height:42px;font-size:22px" onclick="show('start')">‹</button>
+      <h1>إعدادات اللعبة</h1>
+    </div>
+    <div class="section-t">عدد اللاعبين</div>
+    <div class="counter">
+      <button class="cbtn" onclick="changePlayers(-1)">−</button>
+      <div class="num" id="pcount">3</div>
+      <button class="cbtn" onclick="changePlayers(1)">+</button>
+    </div>
+    <div class="section-t">أسماء اللاعبين</div>
+    <div class="pinputs" id="pinputs"></div>
+    <div class="spacer" style="min-height:18px"></div>
+    <button class="btn btn-gold" onclick="startGame()">ابدأ اللعبة 🚀</button>
+  </div>
+
+  <!-- PASS THE PHONE -->
+  <div class="screen" id="pass">
+    <div class="pass-av" id="passAv">🙂</div>
+    <div class="pass-sub">سلّم التليفون لـ</div>
+    <div class="pass-name" id="passName">لاعب</div>
+    <div class="pass-sub" id="passRound"></div>
+    <button class="btn btn-gold" style="margin-top:10px" onclick="beginTurn()">دوري — يلا! 👀</button>
+  </div>
+
+  <!-- TURN / GAME -->
+  <div class="screen" id="game">
+    <div class="topbar">
+      <div class="round-pill">الجولة <b id="roundNo">1</b>/10</div>
+      <div id="dnPill"></div>
+      <div class="turn-player"><span id="turnAv">🙂</span><span id="turnName">لاعب</span></div>
+    </div>
+    <div class="mini-scores" id="miniScores"></div>
+    <div class="hand" id="hand"></div>
+    <div id="gameBody" class="draw-wrap"></div>
+  </div>
+
+  <!-- SPECIAL DRAW -->
+  <div class="screen" id="specialDraw">
+    <div class="streak-badge">🔥 ٣ إجابات صح ورا بعض!</div>
+    <div class="pass-sub">اسحبت كارت خاص:</div>
+    <div id="specCardBox"></div>
+    <button class="btn btn-gold" onclick="afterSpecial()">تمام 👍</button>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="screen" id="over">
+    <div class="trophy">🏆</div>
+    <h1>خلصت اللعبة!</h1>
+    <div class="winner-name" id="winnerName"></div>
+    <div id="ranks"></div>
+    <div class="footer-btns">
+      <button class="btn btn-gold" onclick="rematch()">لعبة تانية بنفس اللاعبين 🔁</button>
+      <button class="btn btn-ghost" onclick="show('start')">من الأول 🏠</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ====================== المحتوى ====================== */
+// d = صعوبة السؤال: 1 سهل، 2 متوسط، 3 صعب
+const QUESTIONS = [
+  {t:"كتاب عنوانه فيه رقم",d:1},
+  {t:"كتاب عنوانه فيه اسم مدينة",d:2},
+  {t:"اذكر اسم جايزة أدبية عالمية",d:3},
+  {t:"كتاب اتعمل منه فيلم",d:1},
+  {t:"رواية كاتبها مصري",d:1},
+  {t:"كتاب عنوانه فيه اسم حيوان",d:2},
+  {t:"كاتب حاصل على نوبل في الأدب",d:3},
+  {t:"رواية أحداثها في وقت حرب",d:2},
+  {t:"كتاب عنوانه كلمة واحدة بس",d:1},
+  {t:"اذكر اسم دار نشر عربية",d:2},
+  {t:"كتاب عنوانه فيه لون",d:2},
+  {t:"اذكر كاتب روسي",d:2},
+  {t:"رواية رومانسية قريتها",d:1},
+  {t:"كتاب في علم النفس",d:2},
+  {t:"كتاب عنوانه فيه اسم بنت",d:2},
+  {t:"رواية بوليسية أو غموض",d:2},
+  {t:"كاتب عربي راحل (متوفّى)",d:2},
+  {t:"كتاب عنوانه فيه كلمة «حب»",d:1},
+  {t:"كتاب عنوانه فيه «ليل» أو «نهار»",d:2},
+  {t:"اذكر اسم مجموعة قصصية",d:2},
+  {t:"كتاب فلسفة",d:3},
+  {t:"رواية خيال علمي",d:2},
+  {t:"كتاب عنوانه على شكل سؤال",d:2},
+  {t:"اذكر اسم كاتبة (امرأة)",d:1},
+  {t:"كتاب تاريخي",d:2},
+  {t:"اذكر اسم ديوان شعر",d:2},
+  {t:"كتاب عنوانه فيه اسم بلد",d:2},
+  {t:"كتاب مكتوب بالعامية المصرية",d:2},
+  {t:"كتاب رشّحهولك حد",d:1},
+  {t:"كتاب عنوانه فيه «موت» أو «حياة»",d:2},
+  {t:"رواية كلاسيكية عالمية",d:2},
+  {t:"كتاب تطوير ذات",d:1},
+  {t:"اذكر كاتب إنجليزي أو أمريكي",d:2},
+  {t:"كتاب عنوانه فيه نبات أو زهرة",d:3},
+  {t:"رواية أحداثها في القاهرة أو إسكندرية",d:2},
+  {t:"كتاب عنوانه فيه رقم بالحروف (تلاتة، سبعة..)",d:2},
+  {t:"اذكر سلسلة كتب (أكتر من جزء)",d:1},
+  {t:"اذكر اسم كاتب لسه عايش",d:1},
+  {t:"رواية اتحوّلت لمسلسل",d:2},
+  {t:"كتاب عنوانه فيه «بيت» أو «دار»",d:2},
+  {t:"رواية نهايتها حزينة",d:1},
+  {t:"كتاب عنوانه فيه فصل من فصول السنة",d:3},
+  {t:"اذكر كاتب من أمريكا اللاتينية",d:3},
+  {t:"كتاب فيه اقتباس بتحفظه",d:2},
+  {t:"كتاب من أدب الرحلات",d:3},
+  {t:"كتاب للأطفال أو ناشئين",d:1},
+  {t:"رواية مترجمة قريتها",d:1},
+  {t:"كتاب عنوانه فيه اسم مهنة",d:3},
+  {t:"اذكر اسم رواية من جزئين أو تلاتة",d:2},
+  {t:"كتاب غيّر طريقة تفكيرك",d:1}
+];
+
+// lvl = شدّة الحكم: 1 خفيف، 2 متوسط، 3 فيروسي/محرج
+const RULINGS = [
+  {t:"ابعت رسالة لأي حد في قائمتك: «رشّحلي كتاب ينقذ حياتي حالاً 📚» — دلوقتي!",lvl:3},
+  {t:"انزل ستوري مكتوب فيه «أنا بكره الكتب 😤» وسيبه ٥ دقايق.",lvl:3},
+  {t:"اتكلم فصحى بس لحد ما ييجي دورك تاني.",lvl:2},
+  {t:"صوّر أقرب كتاب جنبك وابعته في جروب العيلة.",lvl:3},
+  {t:"امدح آخر كتاب قريته بصوت عالي لمدة ٢٠ ثانية من غير توقّف.",lvl:2},
+  {t:"اعمل ريفيو مبالغ فيه لكتاب انت بتختلقه دلوقتي.",lvl:2},
+  {t:"ابعت لأقرب صاحب: «قرّرت أبطّل قراية» وصوّر ردّه.",lvl:3},
+  {t:"مثّل غلاف كتاب بجسمك والباقي يخمّنوا.",lvl:2},
+  {t:"غنّي جملة من أي أغنية بس بدّل كلمة فيها بكلمة «كتاب».",lvl:1},
+  {t:"قول ٣ عناوين كتب مخترعة بسرعة من غير ما تتلكك.",lvl:1},
+  {t:"كلّم حد بالفيديو وقوله يرشّحلك كتاب دلوقتي.",lvl:3},
+  {t:"متتكلمش غير إنجليزي لحد دورك الجاي.",lvl:2},
+  {t:"اعمل صوت «آه يا كتاب» كل ما حد يقول كلمة كتاب لباقي الجيم.",lvl:2},
+  {t:"ابعت إيموجي 📖 لـ ٥ أشخاص من غير أي شرح.",lvl:2},
+  {t:"اقرأ جملة من أقرب كتاب بصوت ممثل دراما.",lvl:1},
+  {t:"احكي حدوتة كتاب وانت مغمّض عينيك.",lvl:1},
+  {t:"خليك «أمين المكتبة» الجولة الجاية: عيد كل سؤال بصوت رسمي.",lvl:1},
+  {t:"قول جملة تشجيعية للقراءة كأنك في إعلان تليفزيون.",lvl:1},
+  {t:"حطّ اسم كتاب مكان اسمك في أي جروب لمدة الجيم.",lvl:3},
+  {t:"اعمل بوست: «الكتب مبتعلّمش حاجة 🙃» واستنى أول تعليق.",lvl:3}
+];
+
+const SPECIALS = {
+  immunity:{ic:"🛡️",name:"حصانة",cls:"hc-immunity",specCls:"hc-immunity",desc:"تلغي الحكم لو وقعت في غلطة. استخدمها وقت ما تقع عليك مصيبة!"},
+  double:  {ic:"🔥",name:"ضعف النقط",cls:"hc-double",specCls:"hc-double",desc:"فعّلها قبل ما تجاوب، ولو إجابتك صح تاخد ضعف النقط."},
+  reverse: {ic:"🔄",name:"اقلب الحكم",cls:"hc-reverse",specCls:"hc-reverse",desc:"لو وقع عليك حكم، حوّله لأي لاعب تاني بدالك 😈"}
+};
+const AVATARS = ["🦊","🐼","🐯","🐸","🦉","🐙","🐲","🦄"];
+
+/* ====================== الحالة ====================== */
+let G = null;
+const $ = id => document.getElementById(id);
+function show(s){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(s).classList.add('active');}
+
+/* ====================== صوت بسيط ====================== */
+let AC=null;
+function beep(freq=600,dur=0.12,type='sine',vol=0.15){
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type=type;o.frequency.value=freq;o.connect(g);g.connect(AC.destination);
+    g.gain.setValueAtTime(vol,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);
+    o.start();o.stop(AC.currentTime+dur);}catch(e){}
+}
+
+/* ====================== SETUP ====================== */
+let setupCount=3;
+function goSetup(){renderInputs();show('setup');}
+function changePlayers(d){setupCount=Math.max(2,Math.min(5,setupCount+d));$('pcount').textContent=setupCount;renderInputs();}
+function renderInputs(){
+  const box=$('pinputs');const old=[...box.querySelectorAll('input')].map(i=>i.value);
+  box.innerHTML='';
+  for(let i=0;i<setupCount;i++){
+    const row=document.createElement('div');row.className='pinput';
+    row.innerHTML=`<span class="av">${AVATARS[i]}</span><input maxlength="12" placeholder="لاعب ${i+1}" value="${old[i]||''}">`;
+    box.appendChild(row);
+  }
+}
+
+function startGame(){
+  const names=[...$('pinputs').querySelectorAll('input')].map((inp,i)=>inp.value.trim()||`لاعب ${i+1}`);
+  G={
+    players:names.map((n,i)=>({name:n,av:AVATARS[i],score:0,hand:[],streak:0,doubleArmed:false})),
+    n:names.length, turn:0, round:1,
+    card:null, ruling:null, awarded:false
+  };
+  nextTurnIntro();
+}
+
+/* ====================== تسلسل الأدوار ====================== */
+function cur(){return G.players[G.turn % G.n];}
+function isLastRound(){return G.round===10;}
+
+function nextTurnIntro(){
+  clearTimer();
+  const p=cur();
+  $('passAv').textContent=p.av;
+  $('passName').textContent=p.name;
+  $('passRound').textContent=`الجولة ${G.round} من 10`+(isLastRound()?" — ⚡ Double or Nothing!":"");
+  show('pass');
+}
+
+function beginTurn(){
+  G.card=null;G.ruling=null;G.awarded=false;
+  renderTopbar();renderHand();
+  $('gameBody').className='draw-wrap';
+  $('gameBody').innerHTML=`
+    <div class="deck" onclick="drawCard()">
+      <div class="bk">📕</div>
+      <div class="lbl">اسحب كارت سؤال</div>
+    </div>
+    <div class="hint">اقرأ السؤال بصوت عالي، عندك ١٠ ثواني تجاوب،<br>والباقي يحكموا الإجابة صح ولا غلط.</div>`;
+  show('game');
+}
+
+function renderTopbar(){
+  $('roundNo').textContent=G.round;
+  const p=cur();
+  $('turnAv').textContent=p.av;$('turnName').textContent=p.name;
+  $('dnPill').innerHTML=isLastRound()?`<div class="dn-pill">⚡ ×2 / −2</div>`:'';
+}
+
+function renderMini(){
+  $('miniScores').innerHTML=G.players.map((p,i)=>
+    `<div class="ms ${i===G.turn%G.n?'cur':''}"><div class="sc">${p.score}</div><div class="nm">${p.av} ${p.name}</div></div>`
+  ).join('');
+}
+
+/* ====================== الكروت في اليد ====================== */
+function renderHand(){
+  renderMini();
+  const p=cur();const box=$('hand');
+  if(p.hand.length===0){box.innerHTML=`<div class="hand-empty">🃏 مفيش كروت خاصة في إيدك — اجمع ٣ صح ورا بعض!</div>`;return;}
+  box.innerHTML=p.hand.map((k,idx)=>{
+    const s=SPECIALS[k];const armed=(k==='double'&&p.doubleArmed)?'on':'';
+    return `<button class="hand-card ${s.cls} ${armed}" onclick="playHand(${idx})"><span class="ic">${s.ic}</span>${s.name}</button>`;
+  }).join('');
+}
+
+function playHand(idx){
+  const p=cur();const k=p.hand[idx];
+  if(k==='double'){
+    if(p.doubleArmed){toast("ضعف النقط مفعّل بالفعل 🔥");return;}
+    p.doubleArmed=true;toast("🔥 فعّلت ضعف النقط — لو جاوبت صح هتاخد الضعف!");renderHand();return;
+  }
+  if(k==='immunity'){toast("🛡️ الحصانة بتتستخدم وقت ما يقع عليك حكم.");return;}
+  if(k==='reverse'){toast("🔄 اقلب الحكم بيشتغل وقت ما يقع عليك حكم.");return;}
+}
+
+/* ====================== سحب السؤال ====================== */
+function rand(a){return a[Math.floor(Math.random()*a.length)];}
+function pickRuling(q){
+  // نظام الصعوبة: سؤال سهل → حكم تقيل، سؤال صعب → حكم خفيف
+  const want = 4 - q.d;            // d1→lvl3 , d2→lvl2 , d3→lvl1
+  const pool = RULINGS.filter(r=>r.lvl===want);
+  return rand(pool.length?pool:RULINGS);
+}
+
+function drawCard(){
+  beep(520,0.1);
+  const q=rand(QUESTIONS);
+  G.card=q;G.ruling=pickRuling(q);
+  const diffTxt=['','سهل','متوسط','صعب'][q.d];
+  const stripe={1:'var(--green)',2:'var(--gold)',3:'var(--red)'}[q.d];
+  $('gameBody').className='';
+  $('gameBody').innerHTML=`
+    <div class="qcard" id="qcard" style="--s:${stripe}">
+      <div class="qtype">📖 سؤال <span class="diff d${q.d}">${diffTxt}</span></div>
+      <div class="qtext">${q.t}</div>
+      <div class="qruling">
+        <div class="rl">⚖️ الحكم لو ماجاوبتش</div>
+        <div class="rt">${G.ruling.t}</div>
+      </div>
+    </div>
+    <div class="timer" id="timer">
+      <svg width="120" height="120"><circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.12)" stroke-width="9" fill="none"/>
+      <circle id="ring" cx="60" cy="60" r="54" stroke="var(--gold)" stroke-width="9" fill="none" stroke-linecap="round"
+       stroke-dasharray="339.29" stroke-dashoffset="0"/></svg>
+      <div class="tnum" id="tnum">10</div>
+    </div>
+    <div class="judge-q">⏱️ اللاعبين يحكموا: الإجابة مقبولة؟</div>
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="judge(true)">صح ✓</button>
+      <button class="btn btn-red" onclick="judge(false)">غلط ✗</button>
+    </div>`;
+  $('qcard').style.setProperty('--s',stripe);
+  document.querySelector('#qcard::before');
+  startTimer();
+}
+
+/* ====================== المؤقّت ====================== */
+let timerInt=null;
+function startTimer(){
+  clearTimer();
+  let t=10.0;const C=339.29;const ring=$('ring');const tnum=$('tnum');const box=$('timer');
+  timerInt=setInterval(()=>{
+    t-=0.1;
+    if(t<=0){t=0;clearTimer();timeUp();return;}
+    const frac=t/10;
+    ring.style.strokeDashoffset=(C*(1-frac)).toFixed(1);
+    tnum.textContent=Math.ceil(t);
+    if(t<=3){box.classList.add('warn');ring.style.stroke='var(--red)';if(Math.abs(t-Math.round(t))<0.05)beep(880,0.07,'square',0.12);}
+  },100);
+}
+function clearTimer(){if(timerInt){clearInterval(timerInt);timerInt=null;}}
+
+function timeUp(){
+  beep(180,0.4,'sawtooth',0.18);
+  const c=$('qcard');if(c)c.classList.add('fail');
+  judge(false,true);
+}
+
+/* ====================== الحكم على الإجابة ====================== */
+function judge(correct,timeout=false){
+  if(G.awarded)return;G.awarded=true;clearTimer();
+  const p=cur();
+  if(correct){correctAnswer(p);}
+  else{failAnswer(p,timeout);}
+}
+
+function correctAnswer(p){
+  beep(660,0.12);setTimeout(()=>beep(880,0.14),90);
+  let pts=isLastRound()?2:1;
+  let doubled=false;
+  if(p.doubleArmed){pts*=2;doubled=true;p.doubleArmed=false;p.hand.splice(p.hand.indexOf('double'),1);}
+  p.score+=pts;p.streak++;
+  const gotStreak = p.streak>0 && p.streak%3===0;
+  $('gameBody').className='draw-wrap';
+  $('gameBody').innerHTML=`
+    <div class="banner ok">
+      <div class="big">✅</div>
+      <h2>إجابة صح!</h2>
+      <div class="pts plus">+${pts} ${doubled?'🔥 (ضعف النقط!)':''}</div>
+      <div style="margin-top:10px;color:#cbb8e0">🔥 سلسلة: ${p.streak} ورا بعض</div>
+    </div>
+    <button class="btn btn-gold" onclick="${gotStreak?'goSpecial()':'endTurn()'}">
+      ${gotStreak?'٣ صح! اسحب كارت خاص 🎁':'الدور اللي بعده ›'}
+    </button>`;
+  renderMini();
+}
+
+function failAnswer(p,timeout){
+  beep(200,0.3,'sawtooth',0.15);
+  p.streak=0;
+  let deduction = isLastRound()?2:0;
+  const hasImm=p.hand.includes('immunity');
+  const hasRev=p.hand.includes('reverse');
+  let actionBtns=`<button class="btn btn-gold" onclick="endTurn()">طبّقت الحكم — التالي ›</button>`;
+  let extra='';
+  if(hasImm){extra+=`<button class="btn btn-ghost" onclick="useImmunity()">🛡️ استخدم الحصانة (إلغاء الحكم)</button>`;}
+  if(hasRev){extra+=`<button class="btn btn-ghost" onclick="useReverse()">🔄 اقلب الحكم على حد تاني</button>`;}
+  $('gameBody').className='draw-wrap';
+  $('gameBody').innerHTML=`
+    <div class="banner no">
+      <div class="big">${timeout?'⏰':'❌'}</div>
+      <h2>${timeout?'خلص الوقت!':'إجابة غلط'}</h2>
+      ${deduction?`<div class="pts minus">−${deduction} (Double or Nothing)</div>`:`<div style="color:#cbb8e0">يتطبّق عليك الحكم 👇</div>`}
+      <div class="ruling-do">
+        <div class="h">⚖️ الحكم</div>
+        <div class="t">${G.ruling.t}</div>
+      </div>
+    </div>
+    <div class="footer-btns">${extra}${actionBtns}</div>`;
+  if(deduction){p.score=Math.max(0,p.score-deduction);} // ماينزلش تحت الصفر
+  G._deducted=deduction;
+  renderMini();
+}
+
+function useImmunity(){
+  const p=cur();p.hand.splice(p.hand.indexOf('immunity'),1);
+  if(G._deducted){p.score+=G._deducted;G._deducted=0;} // رجّع النقط المخصومة
+  beep(700,0.15);toast("🛡️ الحصانة أنقذتك — اتلغى الحكم!");
+  renderMini();
+  $('gameBody').innerHTML=`<div class="banner ok"><div class="big">🛡️</div><h2>اتلغى الحكم!</h2><div style="color:#cbb8e0;margin-top:8px">الحصانة حمتك المرة دي.</div></div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">التالي ›</button>`;
+}
+
+function useReverse(){
+  const p=cur();
+  const others=G.players.map((pl,i)=>({pl,i})).filter(o=>o.i!==G.turn%G.n);
+  $('gameBody').innerHTML=`<div class="banner no"><div class="big">🔄</div><h2>اقلب الحكم على مين؟</h2></div>
+    <div class="footer-btns" style="margin-top:14px">
+    ${others.map(o=>`<button class="btn btn-ghost" onclick="doReverse(${o.i})">${o.pl.av} ${o.pl.name}</button>`).join('')}
+    </div>`;
+}
+function doReverse(targetIdx){
+  const p=cur();p.hand.splice(p.hand.indexOf('reverse'),1);
+  if(G._deducted){p.score+=G._deducted;G._deducted=0;}
+  const tgt=G.players[targetIdx];
+  beep(620,0.15);renderMini();
+  $('gameBody').innerHTML=`<div class="banner ok"><div class="big">😈</div><h2>اتقلب الحكم!</h2>
+    <div class="ruling-do"><div class="h">⚖️ ${tgt.av} ${tgt.name} لازم يعمل:</div><div class="t">${G.ruling.t}</div></div>
+    </div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">اتعمل الحكم — التالي ›</button>`;
+}
+
+/* ====================== الكارت الخاص (سلسلة ٣) ====================== */
+function goSpecial(){
+  const p=cur();
+  const keys=Object.keys(SPECIALS);
+  const k=rand(keys);p.hand.push(k);G._lastSpecial=k;
+  const s=SPECIALS[k];
+  beep(523,0.12);setTimeout(()=>beep(659,0.12),110);setTimeout(()=>beep(784,0.16),220);
+  $('specCardBox').innerHTML=`<div class="spec-card ${s.specCls}"><div class="ic">${s.ic}</div><h2>${s.name}</h2><p>${s.desc}</p></div>`;
+  show('specialDraw');
+}
+function afterSpecial(){show('game');endTurn();}
+
+/* ====================== إنهاء الدور ====================== */
+function endTurn(){
+  G.awarded=false;
+  G.turn++;
+  // خلصت جولة كاملة؟
+  if(G.turn % G.n === 0){
+    G.round++;
+    if(G.round>10){return gameOver();}
+  }
+  nextTurnIntro();
+}
+
+/* ====================== النهاية ====================== */
+function gameOver(){
+  clearTimer();
+  const sorted=[...G.players].sort((a,b)=>b.score-a.score);
+  const top=sorted[0];
+  const tied=sorted.filter(p=>p.score===top.score);
+  $('winnerName').innerHTML = tied.length>1
+    ? `🤝 تعادل! ${tied.map(p=>p.av+' '+p.name).join(' و ')}`
+    : `🎉 الكسبان: ${top.av} ${top.name}`;
+  const medals=['🥇','🥈','🥉'];
+  $('ranks').innerHTML=sorted.map((p,i)=>
+    `<div class="rank ${i===0?'first':''}">
+       <div class="pos">${medals[i]||(i+1)}</div>
+       <div class="rav">${p.av}</div>
+       <div class="rn">${p.name}</div>
+       <div class="rs">${p.score}</div>
+     </div>`).join('');
+  show('over');
+}
+
+function rematch(){
+  G.players.forEach(p=>{p.score=0;p.hand=[];p.streak=0;p.doubleArmed=false;});
+  G.turn=0;G.round=1;G.awarded=false;
+  nextTurnIntro();
+}
+
+/* ====================== توست ====================== */
+let toastT=null;
+function toast(msg){
+  let el=document.querySelector('.toast');if(el)el.remove();
+  el=document.createElement('div');el.className='toast';el.textContent=msg;document.body.appendChild(el);
+  clearTimeout(toastT);toastT=setTimeout(()=>el.remove(),2200);
+}
+
+/* تثبيت لون شريط الكارت */
+const styleEl=document.createElement('style');
+styleEl.textContent='.qcard::before{background:var(--s,var(--gold))!important;}';
+document.head.appendChild(styleEl);
+</script>
+</body>
+</html>

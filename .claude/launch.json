@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "books-game",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8012", "--directory", "www"],
+      "port": 8012
+    }
+  ]
+}
