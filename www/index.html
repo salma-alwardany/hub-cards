@@ -58,6 +58,11 @@ h1{font-weight:900;}
 .btn:disabled{opacity:.4;}
 .mute-btn{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;z-index:40;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
 .mute-btn:active{transform:scale(.9);}
+.modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(8,20,22,.72);backdrop-filter:blur(3px);padding:24px;animation:fade .2s;}
+.modal.hidden{display:none;}
+.modal-box{background:#134a4e;border:2px solid var(--gold);border-radius:22px;padding:20px 16px;max-width:360px;width:100%;box-shadow:var(--shadow);}
+.modal-title{font-weight:900;font-size:18px;color:var(--gold);text-align:center;margin-bottom:14px;line-height:1.5;}
+.modal-box .btn{margin-bottom:9px;}
 
 /* ===== START ===== */
 #start{justify-content:center;align-items:center;text-align:center;gap:16px;padding:14px 12px;background:#0e3138 url('shelf-bg.svg') center center / cover no-repeat;}
@@ -109,7 +114,8 @@ h1{font-weight:900;}
 .hand-card{flex:1;min-width:0;border-radius:14px;padding:10px 6px;text-align:center;font-size:12px;font-weight:800;cursor:pointer;border:none;color:#fff;position:relative;font-family:inherit;}
 .hc-immunity{background:linear-gradient(135deg,#60a5fa,#3b82f6);}
 .hc-double{background:linear-gradient(135deg,#fb923c,#f97316);}
-.hc-reverse{background:linear-gradient(135deg,#a78bfa,#8b5cf6);}
+.hc-raid{background:linear-gradient(135deg,#fb7185,#e11d48);}
+.hc-bravo{background:linear-gradient(135deg,#34d399,#0d9488);}
 .hand-card .ic{font-size:26px;display:block;margin-bottom:3px;}
 .hand-card:active{transform:scale(.93);}
 .hand-card.on{outline:3px solid var(--gold);outline-offset:1px;}
@@ -200,6 +206,14 @@ h1{font-weight:900;}
 <div id="app">
 
   <button id="muteBtn" class="mute-btn" onclick="toggleMute()" aria-label="كتم الصوت">🔊</button>
+
+  <div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle"></div>
+      <div id="modalBody"></div>
+      <button class="btn btn-ghost" style="margin-top:6px" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
 
   <!-- START -->
   <div class="screen active" id="start">
@@ -454,9 +468,10 @@ const RULINGS = [
 ];
 
 const SPECIALS = {
-  immunity:{ic:"🛡️",name:"حصانة",cls:"hc-immunity",specCls:"hc-immunity",desc:"تلغي الحكم لو وقعت في غلطة. استخدمها وقت ما تقع عليك مصيبة!"},
-  double:  {ic:"🔥",name:"ضعف النقط",cls:"hc-double",specCls:"hc-double",desc:"فعّلها قبل ما تجاوب، ولو إجابتك صح تاخد ضعف النقط."},
-  reverse: {ic:"🔄",name:"اقلب الحكم",cls:"hc-reverse",specCls:"hc-reverse",desc:"لو وقع عليك حكم، حوّله لأي لاعب تاني بدالك 😈"}
+  raid:    {ic:"💥",name:"صورم ثقافي",cls:"hc-raid",specCls:"hc-raid",desc:"اختار منافس واخصم منه نقطة! 😈"},
+  immunity:{ic:"🛡️",name:"ضهرنا اتحمى",cls:"hc-immunity",specCls:"hc-immunity",desc:"الغي الحكم اللي وقع عليك. استخدمها وقت المصيبة!"},
+  double:  {ic:"🔥",name:"ضعف النقط",cls:"hc-double",specCls:"hc-double",desc:"فعّلها قبل ما تجاوب — السؤال يبقى بنقطتين الجولة دي."},
+  bravo:   {ic:"👏",name:"برااااافو عليك",cls:"hc-bravo",specCls:"hc-bravo",desc:"اسحب كمان كارت سؤال وزوّد نقطك!"}
 };
 const AVATARS = ["🦊","🐼","🐯","🐸","🦉","🐙","🐲","🦄"];
 
@@ -506,6 +521,9 @@ const SFX = {
   special(){ this.seq([[523,0,0.16,'triangle',0.16],[659,0.09,0.16,'triangle',0.16],[784,0.18,0.16,'triangle',0.16],[1047,0.27,0.26,'sine',0.18]]); },
   shield(){ this.tone(520,0,0.18,'sine',0.18,1000); this.tone(1000,0.12,0.20,'sine',0.10); },
   reverse(){ this.tone(760,0,0.16,'triangle',0.16,360); this.tone(360,0.10,0.18,'triangle',0.15,760); },
+  power(){ this.tone(300,0,0.22,'sawtooth',0.15,760); this.tone(520,0.09,0.16,'square',0.10); },
+  raid(){ this.tone(440,0,0.10,'sawtooth',0.2,130); this.tone(170,0.09,0.24,'square',0.17,70); },
+  bravo(){ this.seq([[523,0,0.12,'triangle',0.18],[659,0.10,0.12,'triangle',0.18],[784,0.20,0.12,'triangle',0.18],[1047,0.30,0.24,'sine',0.2]]); },
   dn(){ this.tone(330,0,0.18,'sawtooth',0.16,660); this.tone(660,0.12,0.18,'square',0.12); },
   win(){ this.seq([[523,0,0.18,'triangle',0.20],[659,0.14,0.18,'triangle',0.20],[784,0.28,0.18,'triangle',0.20],[1047,0.42,0.30,'triangle',0.22],[1047,0.80,0.50,'sine',0.20],[1319,0.80,0.50,'sine',0.16]]); }
 };
@@ -542,7 +560,7 @@ function startGame(){
   G={
     players:names.map((n,i)=>({name:n,av:AVATARS[i],score:0,hand:[],streak:0,doubleArmed:false})),
     n:names.length, turn:0, round:1,
-    card:null, ruling:null, awarded:false
+    card:null, ruling:null, awarded:false, extraDraw:false
   };
   nextTurnIntro();
 }
@@ -602,10 +620,11 @@ function playHand(idx){
   const p=cur();const k=p.hand[idx];
   if(k==='double'){
     if(p.doubleArmed){toast("ضعف النقط مفعّل بالفعل 🔥");return;}
-    p.doubleArmed=true;toast("🔥 فعّلت ضعف النقط — لو جاوبت صح هتاخد الضعف!");renderHand();return;
+    p.doubleArmed=true;SFX.power();toast("🔥 فعّلت ضعف النقط — السؤال ده بنقطتين!");renderHand();return;
   }
-  if(k==='immunity'){toast("🛡️ الحصانة بتتستخدم وقت ما يقع عليك حكم.");return;}
-  if(k==='reverse'){toast("🔄 اقلب الحكم بيشتغل وقت ما يقع عليك حكم.");return;}
+  if(k==='immunity'){toast("🛡️ «ضهرنا اتحمى» بيتستخدم وقت ما يقع عليك حكم.");return;}
+  if(k==='raid'){ openRaid(); return; }
+  if(k==='bravo'){ playBravo(); return; }
 }
 
 /* ====================== سحب السؤال ====================== */
@@ -706,11 +725,9 @@ function failAnswer(p,timeout){
   p.streak=0;
   let deduction = isLastRound()?2:0;
   const hasImm=p.hand.includes('immunity');
-  const hasRev=p.hand.includes('reverse');
   let actionBtns=`<button class="btn btn-gold" onclick="endTurn()">طبّقت الحكم — التالي ›</button>`;
   let extra='';
-  if(hasImm){extra+=`<button class="btn btn-ghost" onclick="useImmunity()">🛡️ استخدم الحصانة (إلغاء الحكم)</button>`;}
-  if(hasRev){extra+=`<button class="btn btn-ghost" onclick="useReverse()">🔄 اقلب الحكم على حد تاني</button>`;}
+  if(hasImm){extra+=`<button class="btn btn-ghost" onclick="useImmunity()">🛡️ ضهرنا اتحمى — الغي الحكم</button>`;}
   $('gameBody').className='draw-wrap';
   $('gameBody').innerHTML=`
     <div class="banner no">
@@ -731,28 +748,36 @@ function failAnswer(p,timeout){
 function useImmunity(){
   const p=cur();p.hand.splice(p.hand.indexOf('immunity'),1);
   if(G._deducted){p.score+=G._deducted;G._deducted=0;} // رجّع النقط المخصومة
-  SFX.shield();toast("🛡️ الحصانة أنقذتك — اتلغى الحكم!");
+  SFX.shield();toast("🛡️ ضهرنا اتحمى — اتلغى الحكم!");
   renderMini();
-  $('gameBody').innerHTML=`<div class="banner ok"><div class="big">🛡️</div><h2>اتلغى الحكم!</h2><div style="color:#aed8d9;margin-top:8px">الحصانة حمتك المرة دي.</div></div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">التالي ›</button>`;
+  $('gameBody').innerHTML=`<div class="banner ok"><div class="big">🛡️</div><h2>اتلغى الحكم!</h2><div style="color:#aed8d9;margin-top:8px">«ضهرنا اتحمى» حماك المرة دي.</div></div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">التالي ›</button>`;
 }
 
-function useReverse(){
-  const p=cur();
+/* 💥 صورم ثقافي: اخصم نقطة من منافس */
+function openRaid(){
   const others=G.players.map((pl,i)=>({pl,i})).filter(o=>o.i!==G.turn%G.n);
-  $('gameBody').innerHTML=`<div class="banner no"><div class="big">🔄</div><h2>اقلب الحكم على مين؟</h2></div>
-    <div class="footer-btns" style="margin-top:14px">
-    ${others.map(o=>`<button class="btn btn-ghost" onclick="doReverse(${o.i})">${o.pl.av} ${o.pl.name}</button>`).join('')}
-    </div>`;
+  if(!others.length){toast("مفيش منافسين!");return;}
+  openModal("💥 صورم ثقافي — اخصم نقطة من مين؟",
+    others.map(o=>`<button class="btn btn-ghost" onclick="doRaid(${o.i})">${o.pl.av} ${o.pl.name} (${o.pl.score} نقطة)</button>`).join(''));
 }
-function doReverse(targetIdx){
-  const p=cur();p.hand.splice(p.hand.indexOf('reverse'),1);
-  if(G._deducted){p.score+=G._deducted;G._deducted=0;}
+function doRaid(targetIdx){
+  const p=cur();const i=p.hand.indexOf('raid');if(i>=0)p.hand.splice(i,1);
   const tgt=G.players[targetIdx];
-  SFX.reverse();renderMini();
-  $('gameBody').innerHTML=`<div class="banner ok"><div class="big">😈</div><h2>اتقلب الحكم!</h2>
-    <div class="ruling-do"><div class="h">⚖️ ${tgt.av} ${tgt.name} لازم يعمل:</div><div class="t">${G.ruling.t}</div></div>
-    </div><button class="btn btn-gold" style="margin-top:14px" onclick="endTurn()">اتعمل الحكم — التالي ›</button>`;
+  tgt.score=Math.max(0,tgt.score-1);
+  SFX.raid();closeModal();renderHand();renderMini();
+  toast(`💥 خصمت نقطة من ${tgt.av} ${tgt.name}!`);
 }
+
+/* 👏 برااااافو عليك: اسحب كمان كارت */
+function playBravo(){
+  const p=cur();const i=p.hand.indexOf('bravo');if(i>=0)p.hand.splice(i,1);
+  G.extraDraw=true;SFX.bravo();renderHand();
+  toast("👏 برااااافو! بعد السؤال ده هتسحب كارت إضافي 🎁");
+}
+
+/* مودال عام */
+function openModal(title,html){$('modalTitle').innerHTML=title;$('modalBody').innerHTML=html;$('modal').classList.remove('hidden');}
+function closeModal(){$('modal').classList.add('hidden');}
 
 /* ====================== الكارت الخاص (سلسلة ٣) ====================== */
 function goSpecial(){
@@ -769,6 +794,7 @@ function afterSpecial(){show('game');endTurn();}
 /* ====================== إنهاء الدور ====================== */
 function endTurn(){
   G.awarded=false;
+  if(G.extraDraw){ G.extraDraw=false; toast("👏 كارت إضافي — اسحب تاني!"); beginTurn(); return; }
   G.turn++;
   // خلصت جولة كاملة؟
   if(G.turn % G.n === 0){
