@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732">
   <defs>
-    <linearGradient id="goldBg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f3b143"/><stop offset="1" stop-color="#dc9026"/>
-    </linearGradient>
+    <radialGradient id="goldBg" cx="50%" cy="42%" r="75%">
+      <stop offset="0" stop-color="#1a4e57"/><stop offset="60%" stop-color="#123e45"/><stop offset="100%" stop-color="#0a2a30"/>
+    </radialGradient>
     <linearGradient id="petalGold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#f6bd4f"/><stop offset="1" stop-color="#e7a233"/>
     </linearGradient>
