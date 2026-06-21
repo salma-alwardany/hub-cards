@@ -147,16 +147,22 @@ h1{font-weight:900;}
 
 /* question card */
 .qcard{
-  background:var(--card);color:var(--ink);border-radius:26px;padding:24px 22px;
+  background:#f6efdd;color:#15414a;border-radius:22px;padding:28px 26px 22px;
   box-shadow:var(--shadow);width:100%;animation:flip .5s;position:relative;overflow:hidden;
+  border:3px solid #e3a83c;
 }
 .qcard.fail{animation:shake .5s;}
-.qcard::before{content:"";position:absolute;top:0;right:0;left:0;height:7px;}
-.qcard .qtype{font-size:13px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.qcard::before{content:"";position:absolute;inset:7px;border:2px dashed #2a7c84;border-radius:13px;opacity:.5;pointer-events:none;}
+.corner{position:absolute;width:50px;height:50px;pointer-events:none;z-index:1;}
+.c-tl{top:5px;left:5px;}
+.c-tr{top:5px;right:5px;transform:scaleX(-1);}
+.c-bl{bottom:5px;left:5px;transform:scaleY(-1);}
+.c-br{bottom:5px;right:5px;transform:scale(-1);}
+.qcard .qtype{font-size:13px;font-weight:800;color:#2a7c84;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px;position:relative;z-index:2;}
 .diff{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;color:#fff;}
 .d1{background:#22c55e;}.d2{background:#f59e0b;}.d3{background:#ef4444;}
-.qtext{font-size:27px;font-weight:900;line-height:1.4;margin:10px 0 4px;}
-.qruling{margin-top:16px;background:#fff3d6;border:1.5px dashed var(--gold-d);border-radius:16px;padding:13px 14px;}
+.qtext{font-size:27px;font-weight:900;line-height:1.4;margin:10px 0 4px;position:relative;z-index:2;}
+.qruling{margin-top:16px;background:#fff3d6;border:1.5px dashed var(--gold-d);border-radius:16px;padding:13px 14px;position:relative;z-index:2;}
 .qruling .rl{font-size:12px;font-weight:800;color:var(--gold-d);display:flex;align-items:center;gap:5px;}
 .qruling .rt{font-size:15px;font-weight:600;color:#5a4a20;margin-top:4px;line-height:1.5;}
 
@@ -185,7 +191,10 @@ h1{font-weight:900;}
 /* special draw */
 #specialDraw{justify-content:center;align-items:center;text-align:center;gap:18px;}
 .streak-badge{font-size:18px;font-weight:800;color:var(--gold);}
-.spec-card{width:200px;border-radius:24px;padding:30px 20px;box-shadow:var(--shadow);animation:flip .6s;}
+.spec-card{width:240px;border-radius:22px;padding:34px 22px;box-shadow:var(--shadow);animation:flip .6s;background:#f6efdd;color:#15414a;border:3px solid #e3a83c;position:relative;overflow:hidden;}
+.spec-card::before{content:"";position:absolute;inset:7px;border:2px dashed #2a7c84;border-radius:13px;opacity:.5;pointer-events:none;}
+.spec-card .ic,.spec-card h2,.spec-card p{position:relative;z-index:2;}
+.spec-card h2{color:#15414a;}
 .spec-card .ic{font-size:70px;}
 .spec-card h2{font-size:26px;font-weight:900;margin:10px 0 6px;}
 .spec-card p{font-size:15px;opacity:.95;line-height:1.5;}
@@ -497,6 +506,7 @@ const SPECIALS = {
   bravo:   {ic:"👏",name:"برااااافو عليك",cls:"hc-bravo",specCls:"hc-bravo",desc:"اسحب كمان كارت سؤال وزوّد نقطك!"}
 };
 const AVATARS = ["🦊","🐼","🐯","🐸","🦉","🐙","🐲","🦄"];
+const CORNERS = '<img class="corner c-tl" src="corner-flourish.svg" alt=""><img class="corner c-tr" src="corner-flourish.svg" alt=""><img class="corner c-bl" src="corner-flourish.svg" alt=""><img class="corner c-br" src="corner-flourish.svg" alt="">';
 
 /* ====================== الحالة ====================== */
 let G = null;
@@ -668,10 +678,9 @@ function drawCard(){
   const q=rand(QUESTIONS);
   G.card=q;G.ruling=pickRuling(q);
   const diffTxt=['','سهل','متوسط','صعب'][q.d];
-  const stripe={1:'var(--green)',2:'var(--gold)',3:'var(--red)'}[q.d];
   $('gameBody').className='';
   $('gameBody').innerHTML=`
-    <div class="qcard" id="qcard" style="--s:${stripe}">
+    <div class="qcard" id="qcard">${CORNERS}
       <div class="qtype">📖 سؤال <span class="diff d${q.d}">${diffTxt}</span></div>
       <div class="qtext">${q.t}</div>
       <div class="qruling">
@@ -690,8 +699,6 @@ function drawCard(){
       <button class="btn btn-green" onclick="judge(true)">صح ✓</button>
       <button class="btn btn-red" onclick="judge(false)">غلط ✗</button>
     </div>`;
-  $('qcard').style.setProperty('--s',stripe);
-  document.querySelector('#qcard::before');
   startTimer();
 }
 
@@ -813,7 +820,7 @@ function goSpecial(){
   const k=rand(keys);p.hand.push(k);G._lastSpecial=k;
   const s=SPECIALS[k];
   SFX.special();
-  $('specCardBox').innerHTML=`<div class="spec-card ${s.specCls}"><div class="ic">${s.ic}</div><h2>${s.name}</h2><p>${s.desc}</p></div>`;
+  $('specCardBox').innerHTML=`<div class="spec-card">${CORNERS}<div class="ic">${s.ic}</div><h2>${s.name}</h2><p>${s.desc}</p></div>`;
   show('specialDraw');
 }
 function afterSpecial(){show('game');endTurn();}
@@ -866,10 +873,7 @@ function toast(msg){
   clearTimeout(toastT);toastT=setTimeout(()=>el.remove(),2200);
 }
 
-/* تثبيت لون شريط الكارت */
-const styleEl=document.createElement('style');
-styleEl.textContent='.qcard::before{background:var(--s,var(--gold))!important;}';
-document.head.appendChild(styleEl);
+/* (شريط الكارت القديم اتشال — الكارت بقى كريمي بإطار زخرفي) */
 
 /* حالة زرار الكتم عند التحميل */
 SFX.muted = localStorage.getItem('hc_muted')==='1';
