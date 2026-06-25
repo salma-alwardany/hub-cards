@@ -597,7 +597,8 @@ function startGame(){
   G={
     players:names.map((n,i)=>({name:n,av:AVATARS[i],score:0,hand:[],streak:0,doubleArmed:false})),
     n:names.length, turn:0, round:1,
-    card:null, ruling:null, awarded:false, extraDraw:false
+    card:null, ruling:null, awarded:false, extraDraw:false,
+    qBag:[], usedRulings:new Set(), _lastQ:null
   };
   nextTurnIntro();
 }
@@ -666,16 +667,31 @@ function playHand(idx){
 
 /* ====================== سحب السؤال ====================== */
 function rand(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+// سحب سؤال من غير تكرار: نخلط الدِك ونوزّع لحد ما يخلص وبعدها نخلط من جديد
+function nextQuestion(){
+  if(!G.qBag||!G.qBag.length){
+    G.qBag=shuffle(QUESTIONS.slice());
+    if(G._lastQ&&G.qBag.length>1&&G.qBag[G.qBag.length-1]===G._lastQ){
+      [G.qBag[0],G.qBag[G.qBag.length-1]]=[G.qBag[G.qBag.length-1],G.qBag[0]];
+    }
+  }
+  const q=G.qBag.pop();G._lastQ=q;return q;
+}
 function pickRuling(q){
-  // نظام الصعوبة: سؤال سهل → حكم تقيل، سؤال صعب → حكم خفيف
+  // نظام الصعوبة: سؤال سهل → حكم تقيل، سؤال صعب → حكم خفيف — وبدون تكرار
   const want = 4 - q.d;            // d1→lvl3 , d2→lvl2 , d3→lvl1
-  const pool = RULINGS.filter(r=>r.lvl===want);
-  return rand(pool.length?pool:RULINGS);
+  let pool = RULINGS.filter(r=>r.lvl===want);
+  if(!pool.length) pool=RULINGS;
+  if(!G.usedRulings) G.usedRulings=new Set();
+  let avail=pool.filter(r=>!G.usedRulings.has(r));
+  if(!avail.length){pool.forEach(r=>G.usedRulings.delete(r));avail=pool;}
+  const r=rand(avail);G.usedRulings.add(r);return r;
 }
 
 function drawCard(){
   SFX.draw();
-  const q=rand(QUESTIONS);
+  const q=nextQuestion();
   G.card=q;G.ruling=pickRuling(q);
   const diffTxt=['','سهل','متوسط','صعب'][q.d];
   $('gameBody').className='';
@@ -861,7 +877,8 @@ function gameOver(){
 
 function rematch(){
   G.players.forEach(p=>{p.score=0;p.hand=[];p.streak=0;p.doubleArmed=false;});
-  G.turn=0;G.round=1;G.awarded=false;
+  G.turn=0;G.round=1;G.awarded=false;G.extraDraw=false;
+  G.qBag=[];G.usedRulings=new Set();G._lastQ=null;
   nextTurnIntro();
 }
 
